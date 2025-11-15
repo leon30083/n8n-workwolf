@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "skills-mcp": {
+      "command": "npx",
+      "args": ["-y", "skills-mcp", "-s", "E:/User/Documents/GitHub/n8n-workwolf/skills" ]
+    }
+  }
+}

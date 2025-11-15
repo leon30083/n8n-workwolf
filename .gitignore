@@ -1,0 +1,27 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Node/Env
+node_modules/
+.env
+.env.*
+
+# Local tools
+.claude/
+*.local.json
+
+# n8n MCP configs with secrets
+config/trae-mcp-n8n.json
+
+# Sensitive docs and samples
+原始需求.md
+API供应商信息/
+
+# Workflows containing tokens or private IDs
+工作流/sora2聚鑫/
+工作流/Sora2_Video_Generator.json
+
+# IDE
+.vscode/
+.idea/
