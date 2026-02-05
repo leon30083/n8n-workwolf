@@ -1,0 +1,41 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl:*)",
+      "Bash(cat:*)",
+      "Bash(node:*)",
+      "Bash(powershell:*)",
+      "Bash(docker-compose:*)",
+      "Bash(docker:*)",
+      "Bash(git:*)",
+      "Bash(netstat:*)",
+      "Bash(xargs:*)",
+      "Bash(findstr:*)",
+      "Bash(openssl:*)",
+      "Bash(Test-NetConnection:*)",
+      "Bash(ipconfig:*)",
+      "mcp__n8n-mcp__tools_documentation",
+      "mcp__n8n-mcp__n8n_validate_workflow",
+      "mcp__n8n-mcp__n8n_get_workflow",
+      "mcp__n8n-mcp__n8n_update_partial_workflow",
+      "mcp__memory__create_entities",
+      "mcp__memory__create_relations",
+      "mcp__memory__add_observations",
+      "mcp__memory__read_graph",
+      "mcp__memory__search_nodes",
+      "mcp__memory__open_nodes",
+      "mcp__github__*",
+      "mcp__context7__*",
+      "mcp__chrome-devtools__*",
+      "mcp__sequential-thinking__*",
+      "mcp__fetch__fetch",
+      "mcp__notion__*",
+      "mcp__web-search-prime__*",
+      "mcp__web_reader__webReader",
+      "mcp__zai-mcp-server__*",
+      "mcp__browsermcp__*"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

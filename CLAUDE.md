@@ -294,3 +294,256 @@ Claude Code has direct access to all these skill capabilities.
 - API documentation: `API供应商信息/` directory
 - Original requirements: `原始需求.md` (in Chinese)
 - Workflow examples: `工作流/` directory
+
+---
+
+# Everything-Claude-Code Integration
+
+**集成日期**: 2026-02-05
+**集成版本**: v0.4.0
+**开发方法论**: Vibe Coding (AI 结对编程)
+
+## 集成概述
+
+n8n-workwolf 已集成 Everything-Claude-Code 开发环境，提供：
+- **3 个 Agents**: planner, architect, code-reviewer
+- **3 个 Commands**: /plan, /tdd, /code-review
+- **8 个 Rules**: 编码规范、工作流程、安全指南
+- **9 个 Skills**: 4 个 Everything + 5 个 n8n
+- **13 个 MCP 服务器**: 核心开发工具 + n8n 特定
+- **Hooks 自动化**: PreToolUse, PostToolUse, Stop
+- **3 个 Contexts**: dev, review, research
+
+## Agents (3 个)
+
+### planner
+实现规划专家。使用场景：
+- 复杂功能实施
+- 架构重构
+- 多步骤任务
+
+### architect
+系统设计专家。使用场景：
+- 技术决策
+- 架构设计
+- 性能优化
+
+### code-reviewer
+代码审查专家。使用场景：
+- 代码变更后（必须执行）
+- 提交前审查
+- 安全检查
+
+## Commands (3 个)
+
+### /plan
+需求分析和实施计划。用法：
+```
+/plan
+描述你的需求...
+```
+
+### /tdd
+测试驱动开发工作流。用法：
+```
+/tdd
+描述要实现的功能...
+```
+
+### /code-review
+代码审查。用法：
+```
+/code-review
+指定文件或变更...
+```
+
+## Rules (8 个)
+
+| Rule | 说明 |
+|------|------|
+| agents.md | Agent 编排规则 |
+| coding-style.md | 代码风格规范 |
+| git-workflow.md | Git 工作流 |
+| hooks.md | Hooks 自动化系统 |
+| patterns.md | 常见模式 |
+| performance.md | 性能优化 |
+| security.md | 安全指南 |
+| testing.md | 测试要求 (80%+ 覆盖率) |
+
+## Hooks 自动化系统
+
+### PreToolUse (执行前)
+- tmux reminder (长时间命令)
+- git push review (推送前审查)
+- doc blocker (阻止创建不必要的文档)
+
+### PostToolUse (执行后)
+- Prettier (自动格式化 JS/TS)
+- TypeScript check (类型检查)
+- console.log warning (警告 console.log)
+
+### Stop (会话结束)
+- console.log audit (检查所有文件)
+
+## Skills (9 个)
+
+### Everything Skills (4 个)
+
+| Skill | 说明 | 触发短语 |
+|-------|------|----------|
+| vibe-coding-cn | Vibe Coding 方法论 | "使用 vibe-coding" |
+| coding-standards | 编码规范 | "检查编码规范" |
+| tdd-workflow | TDD 工作流 | "使用 tdd" |
+| security-review | 安全审查 | "安全审查" |
+
+### n8n Skills (5 个)
+
+| Skill | 说明 | 位置 |
+|-------|------|------|
+| n8n-expression-syntax | 表达式语法 | `skills/` |
+| n8n-mcp-tools-expert | MCP 工具专家 | `skills/` |
+| n8n-node-configuration | 节点配置 | `skills/` |
+| n8n-validation-expert | 验证专家 | `skills/` |
+| n8n-workflow-patterns | 工作流模式 | `skills/` |
+
+**完整清单**: 见 `.claude/SKILLS_MANIFEST.md`
+
+## MCP 服务器 (13 个)
+
+### 核心 (4 个)
+1. **memory** - 知识图谱存储
+2. **github** - GitHub 操作
+3. **context7** - 官方文档查询
+4. **fetch** - HTTP 请求
+
+### GLM (3 个)
+5. **web-search-prime** - 网络搜索
+6. **web-reader** - 网页提取
+7. **zai-mcp-server** - 视觉理解
+
+### 浏览器 (2 个)
+8. **chrome-devtools** - 浏览器自动化
+9. **browsermcp** - 浏览器操作
+
+### n8n 特定 (2 个)
+10. **n8n-mcp** - n8n 工作流
+11. **skills-mcp** - Skills 服务
+
+### 其他 (2 个)
+12. **sequential-thinking** - 复杂推理
+13. **notion** - Notion 文档
+
+**配置文件**: `.claude/mcp_config.json`
+
+## Contexts (3 个)
+
+| Context | 用途 |
+|---------|------|
+| dev.md | 开发上下文 |
+| review.md | 审查上下文 |
+| research.md | 研究上下文 |
+
+## Memory 知识库
+
+### 目录结构
+```
+memory-bank/
+├── prompts/
+│   ├── initial.md        # 初始提示词
+│   ├── implementation.md # 实施提示词
+│   └── debug.md          # 调试提示词
+├── prd.md                # 产品需求文档
+├── tech-stack.md         # 技术栈文档
+├── implementation-plan.md # 实施计划
+├── progress.md           # 进度记录
+└── architecture.md       # 架构文档
+```
+
+### 初始实体
+- n8n-workwolf (project)
+- n8n-mcp (mcp-server)
+- skills-mcp (mcp-server)
+- 聚鑫API (external-api)
+- Sora2 (external-api)
+
+## 环境变量
+
+### 必需变量
+```bash
+# GitHub
+GITHUB_TOKEN=your_github_token
+
+# GLM
+GLM_API_KEY=your_glm_api_key
+ZAI_API_KEY=your_zai_api_key
+
+# n8n
+N8N_API_URL=http://localhost:5678
+N8N_API_KEY=your_n8n_api_key
+
+# 项目路径
+PROJECT_PATH=E:/User/GitHub/n8n-workwolf
+```
+
+**模板文件**: `.env.example`
+
+## Vibe Coding 工作流
+
+### 新功能开发
+1. 使用 `/plan` 创建实施计划
+2. 使用 `tdd-workflow` skill 开始开发
+3. 使用 `n8n-workflow-patterns` 设计工作流
+4. 使用 `/code-review` 审查代码
+5. 更新 Memory 知识库
+
+### 问题排查
+1. 使用 `sequential-thinking` MCP 分析
+2. 使用 `web-search-prime` 搜索解决方案
+3. 使用 `n8n-validation-expert` skill 验证
+4. 记录到 `memory-bank/progress.md`
+
+### 代码审查
+1. 使用 `/code-review` command
+2. 使用 `security-review` skill 检查安全
+3. 使用 `coding-standards` 检查规范
+4. 提供改进建议
+
+## 快速开始
+
+### 1. 激活 Vibe Coding
+```
+"使用 vibe-coding-cn 方法论开始开发"
+```
+
+### 2. 创建实施计划
+```
+/plan
+我需要创建一个 n8n 工作流来调用聚鑫 API
+```
+
+### 3. TDD 开发
+```
+/tdd
+实现视频生成工作流
+```
+
+### 4. 代码审查
+```
+/code-review
+审查工作流配置
+```
+
+## 集成文档
+
+**完整指南**: `docs/EVERYTHING_INTEGRATION_GUIDE.md` (待创建)
+
+## 回滚策略
+
+如需回滚到集成前状态：
+```bash
+BACKUP_DIR="E:/User/GitHub/backups/n8n-workwolf-20260205_215945"
+rm -rf .claude
+cp -r "$BACKUP_DIR/.claude" ./
+git reset --hard HEAD
+git clean -fd
+```

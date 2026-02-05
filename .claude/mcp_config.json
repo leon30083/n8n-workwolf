@@ -1,0 +1,131 @@
+{
+  "mcpServers": {
+    "memory": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ],
+      "env": {},
+      "description": "Persistent memory across sessions"
+    },
+    "github": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
+      },
+      "description": "GitHub operations - PRs, issues, repos"
+    },
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp"
+      ],
+      "env": {},
+      "description": "Live documentation lookup"
+    },
+    "chrome-devtools": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "chrome-devtools-mcp@latest"
+      ],
+      "env": {},
+      "description": "Chrome DevTools automation"
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ],
+      "env": {},
+      "description": "Chain-of-thought reasoning"
+    },
+    "fetch": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-fetch"
+      ],
+      "env": {},
+      "description": "HTTP requests"
+    },
+    "notion": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@notionhq/notion-mcp-server"
+      ],
+      "env": {},
+      "description": "Notion documentation"
+    },
+    "web-search-prime": {
+      "type": "http",
+      "url": "https://open.bigmodel.cn/api/mcp/web_search_prime/mcp",
+      "headers": {
+        "Authorization": "Bearer ${GLM_API_KEY}"
+      },
+      "description": "GLM web search"
+    },
+    "web-reader": {
+      "type": "http",
+      "url": "https://open.bigmodel.cn/api/mcp/web_reader/mcp",
+      "headers": {
+        "Authorization": "Bearer ${GLM_API_KEY}"
+      },
+      "description": "GLM web reader"
+    },
+    "zai-mcp-server": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@z_ai/mcp-server"
+      ],
+      "env": {
+        "Z_AI_API_KEY": "${ZAI_API_KEY}",
+        "Z_AI_MODE": "ZHIPU"
+      },
+      "description": "ZAI image/video analysis"
+    },
+    "browsermcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@browsermcp/mcp@latest"
+      ],
+      "env": {},
+      "description": "Browser automation - navigate, fill forms, screenshots"
+    },
+    "n8n-mcp": {
+      "command": "npx",
+      "args": ["n8n-mcp"],
+      "env": {
+        "MCP_MODE": "stdio",
+        "LOG_LEVEL": "error",
+        "DISABLE_CONSOLE_OUTPUT": "true",
+        "N8N_API_URL": "${N8N_API_URL:-http://localhost:5678}",
+        "N8N_API_KEY": "${N8N_API_KEY}"
+      },
+      "description": "n8n workflow automation"
+    },
+    "skills-mcp": {
+      "command": "npx",
+      "args": ["-y", "skills-mcp", "-s", "${PROJECT_PATH}/skills"],
+      "env": {},
+      "description": "Local skills server for n8n-workwolf"
+    }
+  },
+  "notes": {
+    "project": "n8n-workwolf - everything-claude-code 集成版",
+    "description": "集成 everything-claude-code v0.4.0 + n8n-workwolf MCP 配置",
+    "installed_date": "2026-02-05",
+    "version": "1.0.0",
+    "mcp_servers_count": 13,
+    "source": "everything-claude-code + n8n-workwolf"
+  }
+}

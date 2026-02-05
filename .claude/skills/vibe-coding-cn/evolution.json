@@ -1,0 +1,14 @@
+{
+  "preferences": [
+    "接口先行，实现后补",
+    "文档即上下文，不是事后补",
+    "方法论需要在项目开始时就建立，而不是事后补",
+    "vibe-coding-cn 是核心 Skill，必须在项目初始化时安装 (v2.2)"
+  ],
+  "fixes": [
+    "创建 Memory Bank 目录结构：memory-bank/{prd,tech-stack,implementation-plan,progress,architecture}.md",
+    "提供三种提示词模板：initial.md（初始）、implementation.md（实施）、debug.md（调试）"
+  ],
+  "custom_prompts": "项目初始化工作流：\n1. 创建 memory-bank/ 目录结构\n2. 使用 initial.md 模板开始对话\n3. 使用 implementation.md 执行计划\n4. 遇到问题使用 debug.md 模板",
+  "updated_at": "2026-01-24"
+}
