@@ -1,2 +1,0 @@
-{"__type":"$$EventMessageAudit","id":"6256df4c-ab28-4b83-89b6-8063cba0cc1a","ts":"2025-12-11T12:09:41.538+08:00","eventName":"n8n.audit.user.login.success","message":"n8n.audit.user.login.success","payload":{"userId":"4e99e569-4987-4086-92b7-a00e7ae08085","_email":"leonluo2008@gmail.com","_firstName":"宗彪","_lastName":"罗","globalRole":"global:owner","authenticationMethod":"email"}}
-{"__type":"$$EventMessageConfirm","confirm":"6256df4c-ab28-4b83-89b6-8063cba0cc1a","ts":"2025-12-11T12:09:41.557+08:00","source":{"id":"0","name":"eventBus"}}

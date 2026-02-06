@@ -45,3 +45,9 @@ config/trae-skills-mcp.json.backup
 测试/veo聚鑫/
 测试/*.png
 测试/*.html
+
+# Docker runtime data (databases, logs, etc.)
+docker/n8n/data/
+
+# Misnamed user files
+E*:*/
