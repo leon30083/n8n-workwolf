@@ -25,3 +25,23 @@ API供应商信息/
 # IDE
 .vscode/
 .idea/
+
+# Temporary files
+.before-init-inventory.txt
+nul
+
+# Development directories
+Dev/
+
+# User sensitive data
+用户专用文件夹/
+
+# Backup files
+*.backup
+config/trae-mcp-n8n.json.backup
+config/trae-skills-mcp.json.backup
+
+# Test data (may contain sensitive info)
+测试/veo聚鑫/
+测试/*.png
+测试/*.html

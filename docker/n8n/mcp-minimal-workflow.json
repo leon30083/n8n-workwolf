@@ -1,0 +1,42 @@
+{
+  "name": "MCP Minimal Test",
+  "active": false,
+  "nodes": [
+    {
+      "parameters": {
+        "path": "mcp-test",
+        "methods": ["POST"],
+        "responseMode": "lastNode"
+      },
+      "id": "Webhook",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [-20, 200]
+    },
+    {
+      "parameters": {
+        "response": "{ \"ok\": true }",
+        "responseCode": 200
+      },
+      "id": "Respond to Webhook",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [300, 200]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

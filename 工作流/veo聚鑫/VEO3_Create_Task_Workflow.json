@@ -1,0 +1,268 @@
+{
+  "name": "VEO3 创建任务 - 异步模式",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "veo-video",
+        "responseMode": "responseNode",
+        "httpMethod": "POST",
+        "options": {}
+      },
+      "id": "node-webhook",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 400],
+      "webhookId": "veo-video-create"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "cond_mode_text",
+              "leftValue": "={{ $json.mode }}",
+              "operator": {"type": "string", "operation": "equals"},
+              "rightValue": "text_to_video"
+            }
+          ]
+        }
+      },
+      "id": "node-is-text",
+      "name": "IsTextMode",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [460, 280]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "cond_mode_first",
+              "leftValue": "={{ $json.mode }}",
+              "operator": {"type": "string", "operation": "equals"},
+              "rightValue": "first_frame"
+            }
+          ]
+        }
+      },
+      "id": "node-is-first",
+      "name": "IsFirstFrameMode",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [460, 400]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "cond_mode_key",
+              "leftValue": "={{ $json.mode }}",
+              "operator": {"type": "string", "operation": "equals"},
+              "rightValue": "keyframes"
+            }
+          ]
+        }
+      },
+      "id": "node-is-key",
+      "name": "IsKeyframesMode",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [460, 520]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.jxincm.cn/v1/videos",
+        "authentication": {
+          "genericAuthType": "httpBearerAuth"
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {"name": "model", "value": "={{ $json.model }}"},
+            {"name": "prompt", "value": "={{ $json.prompt }}"},
+            {"name": "seconds", "value": "={{ $json.seconds || 8 }}"},
+            {"name": "size", "value": "={{ $json.size || '16x9' }}"},
+            {"name": "watermark", "value": "false"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "node-text-video",
+      "name": "TextToVideo",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [680, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.jxincm.cn/v1/videos",
+        "authentication": {
+          "genericAuthType": "httpBearerAuth"
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {"name": "model", "value": "={{ $json.model }}"},
+            {"name": "prompt", "value": "={{ $json.prompt }}"},
+            {"name": "seconds", "value": "={{ $json.seconds || 8 }}"},
+            {"name": "size", "value": "={{ $json.size || '16x9' }}"},
+            {"name": "image", "value": "={{ $json.firstFrameUrl }}"},
+            {"name": "watermark", "value": "false"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "node-first-frame",
+      "name": "FirstFrameVideo",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [680, 350]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.jxincm.cn/v1/videos",
+        "authentication": {
+          "genericAuthType": "httpBearerAuth"
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {"name": "model", "value": "={{ $json.model }}"},
+            {"name": "prompt", "value": "={{ $json.prompt }}"},
+            {"name": "seconds", "value": "={{ $json.seconds || 8 }}"},
+            {"name": "size", "value": "={{ $json.size || '16x9' }}"},
+            {"name": "image", "value": "={{ $json.firstFrameUrl }}"},
+            {"name": "end_frame_image", "value": "={{ $json.endFrameUrl }}"},
+            {"name": "watermark", "value": "false"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "node-keyframes",
+      "name": "KeyframesVideo",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [680, 500]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.jxincm.cn/v1/videos",
+        "authentication": {
+          "genericAuthType": "httpBearerAuth"
+        },
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {"name": "model", "value": "veo_3_1-fast-components-4K"},
+            {"name": "prompt", "value": "={{ $json.prompt }}"},
+            {"name": "seconds", "value": "={{ $json.seconds || 8 }}"},
+            {"name": "size", "value": "={{ $json.size || '16x9' }}"},
+            {"name": "components", "value": "={{ JSON.stringify([$json.ref1, $json.ref2, $json.ref3]) }}"},
+            {"name": "watermark", "value": "false"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "node-components",
+      "name": "ComponentsVideo",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [680, 650]
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "id": "node-webhook-response",
+      "name": "WebhookResponse",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [900, 400]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {"name": "task_id", "value": "={{ $json.id }}"},
+            {"name": "status", "value": "queued"},
+            {"name": "progress", "value": "0"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "node-output",
+      "name": "ReturnTaskId",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [1120, 400]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [[{"node": "IsTextMode", "type": "main", "index": 0}]]
+    },
+    "IsTextMode": {
+      "main": [
+        [{"node": "TextToVideo", "type": "main", "index": 0}],
+        [{"node": "IsFirstFrameMode", "type": "main", "index": 0}]
+      ]
+    },
+    "IsFirstFrameMode": {
+      "main": [
+        [{"node": "FirstFrameVideo", "type": "main", "index": 0}],
+        [{"node": "IsKeyframesMode", "type": "main", "index": 0}]
+      ]
+    },
+    "IsKeyframesMode": {
+      "main": [
+        [{"node": "KeyframesVideo", "type": "main", "index": 0}],
+        [{"node": "ComponentsVideo", "type": "main", "index": 0}]
+      ]
+    },
+    "TextToVideo": {
+      "main": [[{"node": "WebhookResponse", "type": "main", "index": 0}]]
+    },
+    "FirstFrameVideo": {
+      "main": [[{"node": "WebhookResponse", "type": "main", "index": 0}]]
+    },
+    "KeyframesVideo": {
+      "main": [[{"node": "WebhookResponse", "type": "main", "index": 0}]]
+    },
+    "ComponentsVideo": {
+      "main": [[{"node": "WebhookResponse", "type": "main", "index": 0}]]
+    },
+    "WebhookResponse": {
+      "main": [[{"node": "ReturnTaskId", "type": "main", "index": 0}]]
+    },
+    "ReturnTaskId": {
+      "main": []
+    }
+  },
+  "pinData": {},
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "00000000-0000-0000-0000-000000000000",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": []
+}

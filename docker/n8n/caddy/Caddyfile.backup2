@@ -1,0 +1,13 @@
+# n8n local domain access
+n8n.local:8443 {
+    encode gzip
+    tls internal
+    reverse_proxy n8n:5678
+}
+
+# IP access
+10.168.1.100:8443 {
+    encode gzip
+    tls internal
+    reverse_proxy n8n:5678
+}

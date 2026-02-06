@@ -1,0 +1,20 @@
+# n8n HTTPS 配置
+n8n.local:443 {
+    encode gzip
+    tls internal
+
+    # 设置正确的头信息
+    reverse_proxy n8n:5678 {
+        header_up Host {http.reverse_proxy.upstream.hostport}
+        header_up X-Real-IP {http.request.remote.host}
+        header_up X-Forwarded-For {http.request.remote.host}
+        header_up X-Forwarded-Proto {scheme}
+    }
+}
+
+# IP 地址也支持
+10.168.1.100:443 {
+    encode gzip
+    tls internal
+    reverse_proxy n8n:5678
+}

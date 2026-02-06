@@ -1,0 +1,11 @@
+# 临时 HTTP 配置（用于快速恢复访问）
+:80 {
+    encode gzip
+    reverse_proxy n8n:5678
+}
+
+# 保持 8443 端口，但不强制 HTTPS
+:8443 {
+    encode gzip
+    reverse_proxy n8n:5678
+}

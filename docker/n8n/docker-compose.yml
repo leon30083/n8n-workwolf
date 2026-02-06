@@ -1,0 +1,18 @@
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    ports:
+      - "0.0.0.0:5678:5678"  # 允许外部访问5678端口
+      - "0.0.0.0:8443:5678"  # 允许外部访问8443端口
+    environment:
+      - TZ=Asia/Shanghai
+      - N8N_HOST=0.0.0.0
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - WEBHOOK_URL=http://10.168.1.100:8443/
+      - N8N_SECURE_COOKIE=false
+      - GENERIC_TIMEZONE=Asia/Shanghai
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+    volumes:
+      - ./data/.n8n:/home/node/.n8n
+    restart: unless-stopped

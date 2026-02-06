@@ -33,7 +33,22 @@
       "mcp__web-search-prime__*",
       "mcp__web_reader__webReader",
       "mcp__zai-mcp-server__*",
-      "mcp__browsermcp__*"
+      "mcp__browsermcp__*",
+      "Bash(dir:*)",
+      "Bash(npx n8n-mcp)",
+      "mcp__n8n-mcp__n8n_create_workflow",
+      "mcp__web-reader__webReader",
+      "Bash(start \"\" \"E:\\\\User\\\\GitHub\\\\n8n-workwolf\\\\测试\\\\veo_video_generator.html\")",
+      "Bash(python -m http.server:*)",
+      "Bash(timeout /t)",
+      "Bash(npx --yes serve@latest:*)",
+      "Bash(ping:*)",
+      "WebSearch",
+      "mcp__n8n-mcp__n8n_list_workflows",
+      "Bash(python scripts/init_skill.py:*)",
+      "Bash(python generate_n8n_node.py:*)",
+      "Bash(echo \"# Security Scan Report\n# Skill: n8n-api-configurator\n# Scan Date: 2026-02-06\n# Status: PASSED\n\")",
+      "Bash(tar:*)"
     ],
     "deny": [],
     "ask": []

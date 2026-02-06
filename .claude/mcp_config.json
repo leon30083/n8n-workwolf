@@ -109,7 +109,7 @@
         "LOG_LEVEL": "error",
         "DISABLE_CONSOLE_OUTPUT": "true",
         "N8N_API_URL": "${N8N_API_URL:-http://localhost:5678}",
-        "N8N_API_KEY": "${N8N_API_KEY}"
+        "N8N_API_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MzQ1YmZhZi1kZGZmLTQwMDEtODY3OC01MmI0MDZkNDc0MzQiLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzcwMzAzNzEwfQ.cHoP_hmNohn9Jy6SANF21o0RbdIFiDfvdX38PAqSOFU"
       },
       "description": "n8n workflow automation"
     },

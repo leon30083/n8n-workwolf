@@ -22,6 +22,21 @@
 - `n8n-workflow-patterns`：当需要规划架构、选择模式（Webhook/HTTP集成/数据库/AI/Schedule）、设计数据流与错误处理、执行创建清单时使用。
 - `n8n-expression-syntax`：当需要编写/排查表达式（`{{ }}` 语法、`$json/$node/$now/$env`）、尤其是 Webhook 数据位于 `$json.body` 的场景时使用。
 
+### 智能体调用约定（必须遵循）
+- n8n 聚鑫流控（id: `n8n-juxin-workflow`）
+  - 用途：编写/修改/复制 n8n 工作流；最小化增量更新；切换凭据；端到端测试。
+  - 触发场景：
+    - “创建/复制/修改 聚鑫 工作流”
+    - “切换到凭据鉴权/批量移除内联 Authorization”
+    - “修复节点表达式/IF 条件/连接结构”
+  - 产出：更新操作清单或直接应用的增量变更 + 运行期校验结果 + 测试建议。
+- 聚鑫对齐校验（id: `juxin-api-alignment-auditor`）
+  - 用途：严格对齐知识库文档进行一致性审计；生成差异与修复建议（不直接更改）。
+  - 触发场景：
+    - “上线前合规校验/发布前走查”
+    - “接口返回异常/怀疑参数名或端点不一致”
+  - 产出：pass/warn/fail 结论、节点级问题清单、可执行的 `n8n_update_partial_workflow` 修复建议数组。
+
 ```mermaid
 flowchart TD
     A[我在做什么？] --> B{规划结构/选模式?}
@@ -43,11 +58,39 @@ flowchart TD
     style V fill:#111827,stroke:#9ca3af,color:#e5e7eb
 ```
 
+## 变更铁律（强制执行）
+- 修改工作流时，必须使用 MCP 工具先获取目标工作流“完整信息”，做到“看全 → 再改”。流程：
+  1) 获取工作流：获取 id/name/active/nodes/connections 全量信息（包含各节点 parameters）
+  2) 最小化增量更新：仅对必要节点用 `n8n_update_partial_workflow`，避免覆盖无关参数
+  3) 结构与表达式校验：`n8n_validate_workflow`（validateNodes/Connections/Expressions，profile:"runtime"）
+  4) 端到端测试：按触发入口执行一次完整流程（含轮询与成功/失败分支），确认与文档一致
+- 上述四步缺一不可；禁止跳过“获取完整信息”和“完整测试”。
+
+- 单一功能最小增量：一次改动只做一个功能模块的最小变更；如需覆盖多分支，仅限同一功能的“镜像改动”，并且必须先在一个分支验证通过，再同步到其他分支。
+- 核心业务保护：不得为“通过校验”或“样式升级”而改动核心业务结构（例如轮询闭环、触发链路、鉴权流）；新增功能只能在成功分支末尾串接，严禁影响既有模块的运行逻辑。
+- 分支独立验证：同一功能存在多分支（如 Text/Image）时，两个分支都要分别验证且互不干扰；任何一支的失败不得阻断另一支的正常执行。
+
+### 约束规则：参数覆盖保护（强制）
+- 切换鉴权或调整请求头时，只能更新以下字段：`parameters.authentication`、`parameters.genericAuthType`、`parameters.headerParameters`、`credentials`；严禁连带改动 `parameters.url/method/sendBody/contentType/bodyParameters` 等关键字段。
+- 增量更新不得传入无关空对象/空数组，以免触发默认值回填（例如把 `method` 重置为 `GET`、`url` 回填为 `http://example.com/index.html`）。除非确需修改，否则不要在更新中包含该字段。
+- 提交更新前先读取并比对节点完整参数；提交后立即单步执行验证：URL/Method/Body 未变化，鉴权生效。
+- IF/Switch 节点必须包含 `conditions.options={version:2,leftValue:"",caseSensitive:true,typeValidation:"strict"}`；布尔/一元操作符需带 `singleValue:true`；缺失将导致校验失败。
+
 ## 工具使用规范
 - 发现节点：优先 `get_node_essentials`，必要时再用 `get_node_info`；按类别使用 `list_nodes`；全文检索用 `search_nodes`（参考 `n8n-mcp-tools-expert`）。
 - 校验配置：缺失项用 `validate_node_minimal`；运行期验证用 `validate_node_operation`（`profile:"runtime"`）。
 - 管理工作流：创建用 `n8n_create_workflow`（节点需含 `parameters` 且连接完整）；增量更新用 `n8n_update_partial_workflow`；整体验证用 `n8n_validate_workflow`。
-- 版本与容错：尽量使用最新 `typeVersion`；关键节点添加错误处理与重试；开启响应头/状态返回便于排错。
+- 版本与容错：尽量使用最新 `typeVersion`；关键节点添加错误处理与重试；开启响应头/状态返回便于排错。这些属于“质量类改动”，必须在独立迭代中执行，不得与业务功能改动同批次进行，且不得改变核心逻辑。
+
+### 聚鑫 API 调用规范（强制）
+- 仅以知识库中的"聚鑫 API 全量文档""聚鑫 API 全量2"为权威依据，严格按文档的方法、路径、参数名/类型与返回结构执行，禁止自由发挥。
+- 端点、HTTP 方法、请求头、请求体键名及取值、查询参数与轮询查询路径，均须与文档逐条对齐；若存在多版本风格，需在节点备注中标注所选风格并保持一致。
+- 字段映射（如 orientation/size/prompt/images 等）必须来自表单或上游节点，禁止硬编码与文档冲突的默认值。
+- 鉴权信息不得写入仓库文件；仅在本地 n8n 凭据或环境变量中配置。
+- **VEO API 鉴权方式**：聚鑫 VEO 接口（/v1/videos）使用 **Bearer Auth**（非 Header Auth）。HTTP Request 节点配置：
+  - `authentication: "genericCredentialType"`
+  - `genericAuthType: "httpBearerAuth"`
+  - 凭据类型：`httpBearerAuth`（Header Auth 仅用于 Sora-2 接口）
 
 ### nodeType 前缀规范（强制）
 - 搜索/校验类工具使用短前缀：`nodes-base.httpRequest`、`nodes-base.webhook`。
@@ -57,6 +100,7 @@ flowchart TD
 ### 校验 Profile 与自动清理（强制）
 - Profile 选择：开发快速用 `minimal`，预发布与回归用 `runtime`（推荐），AI 生成配置可用 `ai-friendly`，生产基线可用 `strict`。
 - 增量更新会触发自动“结构净化”（operators 的 `singleValue`、IF/Switch 元数据修复）；连接错误、分支数量不匹配不会被自动修复。
+- 合法轮询闭环豁免：当校验报告因“合法的轮询闭环（Wait→Check→Normalize→IF→回 Wait）”产生的 `cycle` 错误时，按“业务预期结构”记录并采用说明性豁免或在测试环境降级 Profile 验证；不得为了通过校验而拆改轮询回路。
 
 ### 配置工作流（落地步骤）
 1. 选模式与结构：`n8n-workflow-patterns` 清单驱动。
@@ -124,3 +168,5 @@ flowchart LR
 - 使用正确的 nodeType 前缀；严禁混用短前缀与全前缀。
 - 表达式一律用 `{{ }}` 包裹，Webhook 输入从 `$json.body` 读取；禁止在 Code 节点中使用表达式语法。
 - 增量构建与迭代；每次重要变更后执行工作流校验与最小化集成测试。
+- 聚鑫 API 的所有调用与字段映射必须严格依知识库文档执行（“聚鑫 API 全量文档”“聚鑫 API 全量2”），禁止臆测或擅自变更字段。
+- 修改工作流的任何操作必须先通过 MCP 获取完整工作流信息，并按“最小化增量更新 + 结构/表达式校验 + 端到端测试”闭环执行。

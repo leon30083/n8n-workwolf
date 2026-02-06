@@ -1,0 +1,89 @@
+{
+  "name": "VEO3 查询任务状态 - 异步模式",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "veo-video-query",
+        "responseMode": "responseNode",
+        "httpMethod": "GET",
+        "options": {}
+      },
+      "id": "node-webhook",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 400],
+      "webhookId": "veo-video-query"
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ 'https://api.jxincm.cn/v1/videos/' + $json.id }}",
+        "authentication": {
+          "genericAuthType": "httpBearerAuth"
+        },
+        "options": {}
+      },
+      "id": "node-query",
+      "name": "QueryJuxinAPI",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [460, 400]
+    },
+    {
+      "parameters": {
+        "values": {
+          "string": [
+            {"name": "task_id", "value": "={{ $json.id }}"},
+            {"name": "status", "value": "={{ $json.status }}"},
+            {"name": "progress", "value": "={{ $json.progress || 0 }}"},
+            {"name": "video_url", "value": "={{ $json.video_url || '' }}"}
+          ]
+        },
+        "options": {}
+      },
+      "id": "node-output",
+      "name": "FormatResponse",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [680, 400]
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "id": "node-webhook-response",
+      "name": "WebhookResponse",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [900, 400]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [[{"node": "QueryJuxinAPI", "type": "main", "index": 0}]]
+    },
+    "QueryJuxinAPI": {
+      "main": [[{"node": "FormatResponse", "type": "main", "index": 0}]]
+    },
+    "FormatResponse": {
+      "main": [[{"node": "WebhookResponse", "type": "main", "index": 0}]]
+    },
+    "WebhookResponse": {
+      "main": []
+    }
+  },
+  "pinData": {},
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "00000000-0000-0000-0000-000000000000",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": []
+}
